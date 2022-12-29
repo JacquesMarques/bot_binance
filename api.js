@@ -2,7 +2,6 @@ const axios = require('axios');
 const querystring = require('querystring');
 const crypto = require('crypto');
 
-
 const apiKey = process.env.API_KEY;
 const apiSecret = process.env.SECRET_KEY;
 const apiUrl = process.env.API_URL;
@@ -28,6 +27,14 @@ async function privateCall(path, data = {}, method = 'GET'){
     catch (err) {
         console.log(err)
     }
+}
+
+async function newOrder(symbol, quantity, price, side = 'BUY', type = 'MARKET') {
+    const data = { symbol, side, type, quantity }
+
+    if(price) data.price = price;
+    if(type === 'LIMIT') data.timeInForce = 'GTC';
+    return privateCall('/v3/order', data, 'POST');
 }
 
 async function accountInfo() {
@@ -59,4 +66,4 @@ async function exchangeInfo(){
     return publicCall('/v3/exchangeInfo');
 }
 
-module.exports = { time, depth, exchangeInfo, accountInfo }
+module.exports = { time, depth, exchangeInfo, accountInfo, newOrder }
