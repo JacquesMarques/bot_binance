@@ -23,12 +23,14 @@ setInterval(async () => {
         const coins = account.balances.filter(b => symbol.indexOf(b.asset) !== -1);
         console.log('PROSIÇÃO DA CARTEIRA');
         console.log(coins);
+
         console.log('Verificando se tenho grana...');
         const walletCoin = parseFloat(coins.find(c => c.asset === coin).free);
-        console.log(sell, walletCoin);
-        if (sell <= walletCoin){
+        const qty = parseFloat((walletCoin / sell)- 0.00001).toFixed(5); // cálculo da quantidade
+        console.log(`qty: ${qty}`);
+        if (qty > 0){
             console.log('Temos grana! Comprando agora...');
-            const buyOrder = await api.newOrder(symbol, 1);
+            const buyOrder = await api.newOrder(symbol, qty);
             console.log(`orderId: ${buyOrder.orderId}`);
             console.log(`status: ${buyOrder.status}`);
 
